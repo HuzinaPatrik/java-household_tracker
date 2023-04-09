@@ -5,19 +5,6 @@ import java.time.format.DateTimeFormatter;
 
 public class Main {
     public static void main(String[] args) {
-        /*
-        Feature list:
-            - Daily tracking of what you did / expense (You can select type and based on that)
-            - Plan for the next day
-            - Compare the day with the plan
-            - Automatic save
-
-            !! FUTURE IDEA for the compare feature: AI comparing and suggesting that if you add a next task it occured on the plan or not. And the AI learning by asking if it's correct prediction or not.
-
-            - Command which can list you your old saved days.
-            - History where you can list what you did on a specific day (There is an optional feature to also list the plan)
-        */;
-
         String username = System.getProperty("user.name");
         System.out.println("Hi, " + username + "!");
 
@@ -29,10 +16,10 @@ public class Main {
 
             Interactions.addInteraction("L-P");
         } else {
-            System.out.println("For this day you have nothing planned."); //If he have something planned then the text should be press blablabla to list what you planed for today.
-        }
+            System.out.println("For this day you have nothing planned. If you wanna create the plan for today you should use: 'C-P' in the console"); //If he have something planned then the text should be press blablabla to list what you planed for today.
 
-        /*!!!UGYANEZT KAPJA MEG a TODAY PLANS IS MINT A TOMORROW PLANS!!!*/
+            Interactions.addInteraction("C-P");
+        }
 
         String tomorrowDate = getTomorrowDate();
 

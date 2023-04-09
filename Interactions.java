@@ -18,16 +18,22 @@ public class Interactions {
                 }
 
                 if (interactions.contains(nextLine)) {
-                    if (nextLine.equals("l-p")) {
+                    if (nextLine.equals("l-p") || nextLine.equals("l-tp")) {
                         mTimerFrozen = true;
 
-                        System.out.println("Ohh you want me to list your plans for today. Sure here they are:");
+                        String date = Main.getTodayDate();
 
-                        String todayDate = Main.getTodayDate();
+                        if (nextLine.equals("l-p")) {
+                            System.out.println("Ohh you want me to list your plans for today. Sure here they are:");
+                        } else if (nextLine.equals("l-tp")) {
+                            System.out.println("Ohh you want to list your plans for tomorrow. Sure here they are:");
+
+                            date = Main.getTomorrowDate();
+                        }
 
                         BufferedReader bufReader = null;
                         try {
-                            bufReader = new BufferedReader(new FileReader(todayDate + ".txt"));
+                            bufReader = new BufferedReader(new FileReader(date + ".txt"));
                         } catch (FileNotFoundException e) {
                             throw new RuntimeException(e);
                         }
@@ -51,13 +57,33 @@ public class Interactions {
                             System.out.println(s);
                         }
 
+                        if (nextLine.equals("l-p")) {
+                            System.out.println("If you wanna add to those plans use: 'A-P' in the console!");
+                            System.out.println("If you wanna remove from those plans use: 'R-P' in the console!");
+                            addInteraction("A-P");
+                            addInteraction("R-P");
+                        } else if (nextLine.equals("l-tp")) {
+                            System.out.println("If you wanna add to those plans use: 'A-TP' in the console!");
+                            System.out.println("If you wanna remove from those plans use: 'R-TP' in the console!");
+                            addInteraction("A-TP");
+                            addInteraction("R-TP");
+                        }
+
                         mTimerFrozen = false;
-                    } else if (nextLine.equals("c-tp")) {
+                    } else if (nextLine.equals("c-tp") || nextLine.equals("c-p")) {
                         mTimerFrozen = true;
 
-                        System.out.println("You started creating the plans for tomorrow, if you want to end adding into type 'end' into the console!");
+                        String date = Main.getTodayDate();
 
-                        StringBuilder saveableText = new StringBuilder(Main.getTomorrowDate() + " Plans:\n");
+                        if (nextLine.equals("c-p")) {
+                            System.out.println("You started creating the plans for today, if you want to end adding into type 'end' into the console!");
+                        } else if (nextLine.equals("c-tp")) {
+                            System.out.println("You started creating the plans for tomorrow, if you want to end adding into type 'end' into the console!");
+
+                            date = Main.getTomorrowDate();
+                        }
+
+                        StringBuilder saveableText = new StringBuilder(date + " Plans:\n");
 
                         int id = 0;
                         while (true) {
@@ -74,63 +100,40 @@ public class Interactions {
                         }
 
                         try {
-                            FileWriter myWriter = new FileWriter(Main.getTomorrowDate() + ".txt");
+                            FileWriter myWriter = new FileWriter(date + ".txt");
                             myWriter.write(saveableText.toString());
                             myWriter.close();
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
 
-                        System.out.println("You successfully created your plans for tomorrow. If you wanna list those plans use: 'L-TP' in the console!");
+                        if (nextLine.equals("c-p")) {
+                            System.out.println("You successfully created your plans for today. If you wanna list those plans use: 'L-P' in the console!");
+
+                            Interactions.addInteraction("L-P");
+                        } else if (nextLine.equals("c-tp")) {
+                            System.out.println("You successfully created your plans for tomorrow. If you wanna list those plans use: 'L-TP' in the console!");
+
+                            Interactions.addInteraction("L-TP");
+                        }
 
                         mTimerFrozen = false;
-                    } else if (nextLine.equals("l-tp")) {
+                    } else if (nextLine.equals("a-tp") || nextLine.equals("a-p")) {
                         mTimerFrozen = true;
 
-                        System.out.println("Ohh you want to list your plans for tomorrow. Sure here they are:");
+                        String date = Main.getTodayDate();
 
-                        String tomorrowDate = Main.getTomorrowDate();
+                        if (nextLine.equals("a-p")) {
+                            System.out.println("You started adding more plans for today, if you want to end adding into type 'end' into the console!");
+                        } else if (nextLine.equals("a-tp")) {
+                            System.out.println("You started adding more plans for tomorrow, if you want to end adding into type 'end' into the console!");
 
-                        BufferedReader bufReader = null;
-                        try {
-                            bufReader = new BufferedReader(new FileReader(tomorrowDate + ".txt"));
-                        } catch (FileNotFoundException e) {
-                            throw new RuntimeException(e);
+                            date = Main.getTomorrowDate();
                         }
-
-                        ArrayList<String> listOfLines = new ArrayList<>();
-                        String line = null;
-                        try {
-                            line = bufReader.readLine();
-
-                            while (line != null) {
-                                listOfLines.add(line);
-                                line = bufReader.readLine();
-                            }
-
-                            bufReader.close();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-
-                        for (String s : listOfLines) {
-                            System.out.println(s);
-                        }
-
-                        System.out.println("If you wanna add to those plans use: 'A-TP' in the console!");
-                        System.out.println("If you wanna remove from those plans use: 'R-TP' in the console!");
-                        addInteraction("A-TP");
-                        addInteraction("R-TP");
-
-                        mTimerFrozen = false;
-                    } else if (nextLine.equals("a-tp")) {
-                        mTimerFrozen = true;
-
-                        System.out.println("You started adding more plans for tomorrow, if you want to end adding into type 'end' into the console!");
 
                         StringBuilder saveableText = new StringBuilder("");
 
-                        long id = countLineBufferedReader(Main.getTomorrowDate() + ".txt");
+                        long id = countLineBufferedReader(date + ".txt") - 1;
                         while (true) {
                             if (mScanner.hasNextLine()) {
                                 String text = mScanner.nextLine();
@@ -145,35 +148,51 @@ public class Interactions {
                         }
 
                         try {
-                            FileWriter myWriter = new FileWriter(Main.getTomorrowDate() + ".txt", true);
+                            FileWriter myWriter = new FileWriter(date + ".txt", true);
                             myWriter.write(saveableText.toString());
                             myWriter.close();
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
 
-                        System.out.println("You successfully added more plans for tomorrow. If you wanna list those plans use: 'L-TP' in the console!");
+                        if (nextLine.equals("a-p")) {
+                            System.out.println("You successfully added more plans for today. If you wanna list those plans use: 'L-TP' in the console!");
 
-                        removeInteraction("A-TP");
-                        removeInteraction("R-TP");
+                            removeInteraction("A-P");
+                            removeInteraction("R-P");
+                        } else if (nextLine.equals("a-tp")) {
+                            System.out.println("You successfully added more plans for tomorrow. If you wanna list those plans use: 'L-TP' in the console!");
+
+                            removeInteraction("A-TP");
+                            removeInteraction("R-TP");
+                        }
 
                         mTimerFrozen = false;
-                    } else if (nextLine.equals("r-tp")) {
+                    } else if (nextLine.equals("r-tp") || nextLine.equals("r-p")) {
                         mTimerFrozen = true;
+
+                        String date = Main.getTodayDate();
+
+                        if (nextLine.equals("r-tp"))
+                            date = Main.getTomorrowDate();
 
                         System.out.println("Which lines you wanna delete? If you want to stop, use: 'end' in the console!");
 
-                        long maxLines = countLineBufferedReader(Main.getTomorrowDate() + ".txt") - 1;
+                        long maxLines = countLineBufferedReader(date + ".txt") - 1;
                         List<Integer> removableLines = new ArrayList<Integer>();
 
                         while (true) {
                             if (mScanner.hasNextInt()) {
                                 Integer line = mScanner.nextInt();
 
-                                if (!removableLines.contains(line)) {
-                                    removableLines.add(line);
+                                if (line <= maxLines) {
+                                    if (!removableLines.contains(line)) {
+                                        removableLines.add(line);
+                                    } else {
+                                        System.out.println("This line already deleted!");
+                                    }
                                 } else {
-                                    System.out.println("This line already deleted!");
+                                    System.out.println("This line not exists!");
                                 }
                             } else if (mScanner.hasNextLine()) {
                                 String text = mScanner.nextLine();
@@ -184,11 +203,9 @@ public class Interactions {
                             }
                         }
 
-                        String tomorrowDate = Main.getTomorrowDate();
-
                         BufferedReader bufReader = null;
                         try {
-                            bufReader = new BufferedReader(new FileReader(tomorrowDate + ".txt"));
+                            bufReader = new BufferedReader(new FileReader(date + ".txt"));
                         } catch (FileNotFoundException e) {
                             throw new RuntimeException(e);
                         }
@@ -212,26 +229,38 @@ public class Interactions {
 
                         int id = 0;
                         for (int i = 0; i < listOfLines.size(); i++) {
-                            if (!removableLines.contains(i + 1)) {
-                                id++;
+                            if (!removableLines.contains(i)) {
                                 String text = listOfLines.get(i);
 
-                                saveableText.append(" - [" + id + "] " + text.substring(text.indexOf(']') + 2, text.length()) + "\n");
+                                if (i == 0) {
+                                    saveableText.append(text + "\n");
+                                } else {
+                                    id++;
+
+                                    saveableText.append(" - [" + id + "] " + text.substring(text.indexOf(']') + 2, text.length()) + "\n");
+                                }
                             }
                         }
 
                         try {
-                            FileWriter myWriter = new FileWriter(tomorrowDate + ".txt");
+                            FileWriter myWriter = new FileWriter(date + ".txt");
                             myWriter.write(saveableText.toString());
                             myWriter.close();
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
 
-                        System.out.println("Those lines successfully deleted. If you want to list tomorrow plans use: 'L-TP' in the console!");
+                        if (nextLine.equals("r-p")) {
+                            System.out.println("Those lines successfully deleted. If you want to list today plans use: 'L-P' in the console!");
 
-                        removeInteraction("A-TP");
-                        removeInteraction("R-TP");
+                            removeInteraction("A-P");
+                            removeInteraction("R-P");
+                        } else if (nextLine.equals("r-tp")) {
+                            System.out.println("Those lines successfully deleted. If you want to list tomorrow plans use: 'L-TP' in the console!");
+
+                            removeInteraction("A-TP");
+                            removeInteraction("R-TP");
+                        }
 
                         mTimerFrozen = false;
                     } else {

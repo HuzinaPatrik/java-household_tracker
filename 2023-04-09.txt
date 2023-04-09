@@ -1,6 +1,0 @@
- - [1] teszt4
- - [2] teszt5
- - [3] teszt2
- - [4] tesztecske
- - [5] tesztecske2
- - [6] igen
